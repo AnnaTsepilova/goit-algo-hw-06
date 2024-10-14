@@ -1,51 +1,39 @@
 import networkx as nx
-import heapq
+import matplotlib.pyplot as plt
 
-# Створимо граф з вагами на ребрах
+# Створюємо граф з вагами ребер
 G = nx.Graph()
 
-# Додамо вузли
-G.add_node("A")
-G.add_node("B")
-G.add_node("C")
-G.add_node("D")
-G.add_node("E")
+# Додаємо вершини (міста)
+cities = ['Kharkiv', 'Kyiv', 'Vinnytsia', 'Chernivtsi', 'Uzhhorod']
+G.add_nodes_from(cities)
 
-# Додамо ребра з вагами (відстань між вершинами)
-G.add_edge("A", "B", weight=4)
-G.add_edge("A", "C", weight=2)
-G.add_edge("B", "D", weight=5)
-G.add_edge("C", "E", weight=3)
-G.add_edge("D", "E", weight=1)
+# Додаємо ребра з вагами (відстані між містами у вигляді довільних значень)
+edges_with_weights = [
+    ('Kharkiv', 'Kyiv', 470),    # Відстань між Харковом і Києвом
+    ('Kyiv', 'Vinnytsia', 267),  # Відстань між Києвом і Вінницею
+    ('Vinnytsia', 'Chernivtsi', 234),  # Відстань між Вінницею і Чернівцями
+    ('Chernivtsi', 'Uzhhorod', 325),   # Відстань між Чернівцями і Ужгородом
+    ('Kyiv', 'Chernivtsi', 538)   # Відстань між Києвом і Чернівцями
+]
 
-# Реалізація алгоритму Дейкстри
-def dijkstra(graph, start):
-    # Ініціалізуємо відстані від стартової вершини до всіх інших як нескінченність
-    distances = {node: float('inf') for node in graph.nodes}
-    distances[start] = 0
+G.add_weighted_edges_from(edges_with_weights)
 
-    # Черга з пріоритетом для відстеження вершини з найменшою відстанню
-    priority_queue = [(0, start)]  # (відстань, вузол)
+# Візуалізуємо граф із вагами ребер
+plt.figure(figsize=(8, 6))
+pos = nx.spring_layout(G)  # Визначаємо положення для вершин
+nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=3000, font_size=10, font_weight='bold')
+edge_labels = nx.get_edge_attributes(G, 'weight')
+nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+plt.title("Граф міст з вагами ребер")
+plt.show()
 
-    while priority_queue:
-        current_distance, current_node = heapq.heappop(priority_queue)
+# Алгоритм Дейкстри для знаходження найкоротшого шляху між усіма вершинами
+shortest_paths = dict(nx.all_pairs_dijkstra_path(G, weight='weight'))
+shortest_path_lengths = dict(nx.all_pairs_dijkstra_path_length(G, weight='weight'))
 
-        # Якщо відстань, яку ми витягаємо з черги, більше, ніж вже відома відстань, пропускаємо її
-        if current_distance > distances[current_node]:
-            continue
-
-        # Оновлюємо відстані до сусідніх вершин
-        for neighbor, attrs in graph[current_node].items():
-            distance = current_distance + attrs['weight']
-
-            # Якщо нова відстань до сусіда менша за попередню, оновлюємо її
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(priority_queue, (distance, neighbor))
-
-    return distances
-
-# Використаємо алгоритм Дейкстри для пошуку найкоротших шляхів від кожної вершини
-for node in G.nodes:
-    shortest_paths = dijkstra(G, node)
-    print(f"Найкоротші шляхи від вершини {node}: {shortest_paths}")
+# Виведемо найкоротші шляхи між усіма парами вершин
+for start_city, paths in shortest_paths.items():
+    print(f"Найкоротші шляхи від {start_city}:")
+    for end_city, path in paths.items():
+        print(f"  до {end_city}: шлях {path}, довжина {shortest_path_lengths[start_city][end_city]} км")

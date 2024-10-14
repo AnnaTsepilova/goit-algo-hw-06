@@ -1,60 +1,56 @@
 import networkx as nx
-from collections import deque
 
-# Функція для пошуку в глибину (DFS)
+# Створення графа (задаємо той самий граф з першого завдання)
+G = nx.Graph()
+cities = ['Kharkiv', 'Kyiv', 'Vinnytsia', 'Chernivtsi', 'Uzhhorod']
+G.add_nodes_from(cities)
+
+edges = [('Kharkiv', 'Kyiv'),
+         ('Kyiv', 'Vinnytsia'),
+         ('Vinnytsia', 'Chernivtsi'),
+         ('Chernivtsi', 'Uzhhorod'),
+         ('Kyiv', 'Chernivtsi')]
+
+G.add_edges_from(edges)
+
+# Алгоритм пошуку в глибину (DFS)
 def dfs(graph, start, goal, path=None):
     if path is None:
-        path = [start]
+        path = []
+    path = path + [start]
+
     if start == goal:
         return path
-    for neighbor in graph.neighbors(start):
+
+    for neighbor in graph[start]:
         if neighbor not in path:
-            new_path = dfs(graph, neighbor, goal, path + [neighbor])
+            new_path = dfs(graph, neighbor, goal, path)
             if new_path:
                 return new_path
     return None
 
-# Функція для пошуку в ширину (BFS)
+# Алгоритм пошуку в ширину (BFS)
 def bfs(graph, start, goal):
-    queue = deque([[start]])  # Використовуємо чергу для зберігання шляхів
-    visited = set()  # Множина для відвіданих вершин
+    queue = [(start, [start])]  # черга для проходження вершин
+    
     while queue:
-        path = queue.popleft()
-        node = path[-1]
-        if node == goal:
-            return path
-        if node not in visited:
-            visited.add(node)
-            for neighbor in graph.neighbors(node):
-                new_path = list(path) + [neighbor]
-                queue.append(new_path)
+        (vertex, path) = queue.pop(0)
+        for neighbor in graph[vertex]:
+            if neighbor not in path:
+                if neighbor == goal:
+                    return path + [neighbor]
+                else:
+                    queue.append((neighbor, path + [neighbor]))
     return None
 
-# Створимо граф з першого завдання
-G = nx.Graph()
+# Тестування алгоритмів на прикладі пошуку шляху між двома містами
+start_city = 'Kharkiv'
+goal_city = 'Uzhhorod'
 
-# Додамо вузли з координатами
-G.add_node("A", pos=(0, 0))
-G.add_node("B", pos=(1, 2))
-G.add_node("C", pos=(2, 0))
-G.add_node("D", pos=(3, 3))
-G.add_node("E", pos=(4, 1))
+# Пошук за допомогою DFS
+dfs_path = dfs(G, start_city, goal_city)
+print(f"Шлях з {start_city} до {goal_city} за допомогою DFS: {dfs_path}")
 
-# Додамо ребра
-G.add_edge("A", "B")
-G.add_edge("A", "C")
-G.add_edge("B", "D")
-G.add_edge("C", "E")
-G.add_edge("D", "E")
-
-# Використовуємо алгоритми для пошуку шляху між вершинами "A" і "E"
-start_node = "A"
-goal_node = "E"
-
-# Пошук в глибину (DFS)
-dfs_path = dfs(G, start_node, goal_node)
-print(f"Шлях DFS від {start_node} до {goal_node}: {dfs_path}")
-
-# Пошук в ширину (BFS)
-bfs_path = bfs(G, start_node, goal_node)
-print(f"Шлях BFS від {start_node} до {goal_node}: {bfs_path}")
+# Пошук за допомогою BFS
+bfs_path = bfs(G, start_city, goal_city)
+print(f"Шлях з {start_city} до {goal_city} за допомогою BFS: {bfs_path}")

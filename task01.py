@@ -1,42 +1,37 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# Створимо порожній граф
+# Створення порожнього графа
 G = nx.Graph()
 
-# Додамо вузли, які представляють перехрестя або зупинки
-G.add_node("A", pos=(0, 0))  # Вузол A на координатах (0, 0)
-G.add_node("B", pos=(1, 2))  # Вузол B на координатах (1, 2)
-G.add_node("C", pos=(2, 0))  # Вузол C на координатах (2, 0)
-G.add_node("D", pos=(3, 3))  # Вузол D на координатах (3, 3)
-G.add_node("E", pos=(4, 1))  # Вузол E на координатах (4, 1)
+# Додавання вершин (міста)
+cities = ['Kharkiv', 'Kyiv', 'Vinnytsia', 'Chernivtsi', 'Uzhhorod']
+G.add_nodes_from(cities)
 
-# Додамо ребра, які представляють дороги або маршрути
-G.add_edge("A", "B")
-G.add_edge("A", "C")
-G.add_edge("B", "D")
-G.add_edge("C", "E")
-G.add_edge("D", "E")
+# Додавання ребер (шляхів між містами)
+edges = [('Kharkiv', 'Kyiv'),
+         ('Kyiv', 'Vinnytsia'),
+         ('Vinnytsia', 'Chernivtsi'),
+         ('Chernivtsi', 'Uzhhorod'),
+         ('Kyiv', 'Chernivtsi')]
 
-# Отримуємо позиції для вузлів
-pos = nx.get_node_attributes(G, 'pos')
+G.add_edges_from(edges)
 
-# Візуалізація графу
+# Візуалізація графа
 plt.figure(figsize=(8, 6))
-nx.draw(G, pos, with_labels=True, node_size=700, node_color='skyblue', font_size=15, font_weight='bold', edge_color='gray')
-plt.title("Транспортна мережа міста")
+pos = nx.spring_layout(G)  # Обираємо розташування вершин
+nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=3000, font_size=10, font_weight='bold')
+nx.draw_networkx_edge_labels(G, pos, edge_labels={(u, v): f"{u}-{v}" for u, v in edges})
+plt.title("Граф міст")
 plt.show()
 
-
-# Основні характеристики графа
+# Аналіз основних характеристик
 num_nodes = G.number_of_nodes()  # Кількість вершин
 num_edges = G.number_of_edges()  # Кількість ребер
-degrees = dict(G.degree())  # Ступінь кожної вершини
+degree_of_nodes = dict(G.degree())  # Ступінь кожної вершини
 
-# Виведемо результати
 print(f"Кількість вершин: {num_nodes}")
 print(f"Кількість ребер: {num_edges}")
-print("Ступінь вершин:")
-for node, degree in degrees.items():
-    print(f"Вершина {node}: Ступінь {degree}")
-
+print("Ступінь кожної вершини:")
+for node, degree in degree_of_nodes.items():
+    print(f"{node}: {degree}")
