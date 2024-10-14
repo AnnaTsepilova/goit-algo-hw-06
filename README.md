@@ -14,23 +14,24 @@
 
 ## Завдання 1
 
-[graph_1](./assets/Gr_1.png)
+![graph_1](./assets/Gr_1.png)
 
+```python
 Кількість вершин: 5
 Кількість ребер: 5
-
 Ступінь кожної вершини:
 Kharkiv: 1
 Kyiv: 3
 Vinnytsia: 2
 Chernivtsi: 3
 Uzhhorod: 1
+```
 
 ## Опис результатів до завдання 2
 
 Для графа, який ми розглядаємо (міста Харків, Київ, Вінниця, Чернівці та Ужгород), результати обох алгоритмів для пошуку шляху між Харковом і Ужгородом виглядають однаково:
 
-```
+```python
 Шлях з Kharkiv до Uzhhorod за допомогою DFS: ['Kharkiv', 'Kyiv', 'Chernivtsi', 'Uzhhorod']
 Шлях з Kharkiv до Uzhhorod за допомогою BFS: ['Kharkiv', 'Kyiv', 'Chernivtsi', 'Uzhhorod']
 ```
@@ -62,8 +63,9 @@ Uzhhorod: 1
 
 ## Завдання 3
 
-[graph_2](./assets/Gr_2.png)
+![graph_2](./assets/Gr_2.png)
 
+```python
 Найкоротші шляхи від Kharkiv:
 до Kharkiv: шлях ['Kharkiv'], довжина 0 км
 до Kyiv: шлях ['Kharkiv', 'Kyiv'], довжина 470 км
@@ -94,3 +96,4 @@ Uzhhorod: 1
 до Vinnytsia: шлях ['Uzhhorod', 'Chernivtsi', 'Vinnytsia'], довжина 559 км
 до Kyiv: шлях ['Uzhhorod', 'Chernivtsi', 'Vinnytsia', 'Kyiv'], довжина 826 км
 до Kharkiv: шлях ['Uzhhorod', 'Chernivtsi', 'Vinnytsia', 'Kyiv', 'Kharkiv'], довжина 1296 км
+```
